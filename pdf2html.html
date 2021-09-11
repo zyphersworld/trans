@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<meta name="viewport" content="width=device-width">
+<link rel="stylesheet" href="assets/js/libs/jquery-te-1.4.0.css" />
+<style>
+body{background-image: url("assets/img/world_map.jpg");}
+
+.wrapper{
+	vertical-align:top;
+	text-align:center;
+	width:1280px
+	margin:0px auto;
+}
+
+.header{
+	background: rgba(200,200,200,0.5);
+	width:450px;
+	margin:0px auto;
+	padding:8px;
+	border-radius:12px;
+	box-shadow: 1px 1px 5px #111;
+}
+
+h1,h2{
+	text-align:center;
+	font-family:sans-serif;
+	margin:0px;
+	padding:0px;
+	display:inline-block;
+	vertical-align:middle;
+}
+
+h1{
+	color:#cc9933;
+	text-shadow: -2px 0px 1px #000, 1px 1px 0px #000, 2px 2px 1px #fff;
+}
+
+h2{
+	color:#fff;
+	font-size:12pt;
+	font-weight:400;
+	margin-top:-12px;
+	text-shadow: 0px 1px 1px #000;
+	font-variant:small-caps;
+}
+
+#nav{
+	margin:0px auto;
+}
+
+#pageCounter{
+	display:inline-block;
+}
+
+
+#main-editor{
+	background:#aaaaaa;
+	width:900px;
+	margin:20px auto;
+	border-radius:20px;
+}
+
+.editor-container{
+	display:inline-block;
+	vertical-align:top;
+<!--
+	width:420px;
+-->
+}
+
+#page-container{
+
+	border-radius:20px;
+	background:#ddd;
+<!--
+	width:420px;
+-->
+}
+
+#ta_translation{
+	border:solid 2px black;
+<!--
+	height:800px;
+	width:640px;
+-->
+}
+
+body .jqte_editor, body .jqte_source{
+
+	min-height:540px;
+	width:420px;
+}
+
+
+button, #btn_d, #btn_FAKE_l{
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #0e2d40);
+  background-image: -moz-linear-gradient(top, #3498db, #0e2d40);
+  background-image: -ms-linear-gradient(top, #3498db, #0e2d40);
+  background-image: -o-linear-gradient(top, #3498db, #0e2d40);
+  background-image: linear-gradient(to bottom, #3498db, #0e2d40);
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  text-shadow: 1px 1px 3px #030303;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 12px;
+  padding: 6px 12px 6px 12px;
+  border: solid #1f628d 1px;
+  text-decoration: none;
+}
+
+button:hover, #btn_d:hover, .fileUpload:hover > #btn_FAKE_l{
+	  background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+}
+
+#btn_l{
+	z-index:0;
+}
+#btn_FAKE_l{
+z-index:999;
+}
+
+.fileUpload {
+    position: relative;
+    overflow: hidden;
+    margin: 0px;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.fileUpload input#btn_l {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+
+#logo{
+	background-image: url("assets/img/logo_w.png");
+	background-size:contain;
+	background-repeat: no-repeat;
+	width:420px;
+	height:160px;
+	margin:0px auto -40px auto;
+
+
+}
+
+.zoom {
+     zoom: 1.25; /* Chrome */
+     transform: scale(1.25); /* FF, neglected by Chrome */
+     transform-origin: 50 50;
+
+}
+
+.center{
+	position: absolute;
+  left: 50%;
+  top: 50%;
+	transform: translate(-50%, -50%);
+}
+</style>
+
+<script type="text/javascript" language="javascript" src="assets/books/nw.js"></script>
+<script language="javascript" src="assets/js/libs/lz-string.min.js"></script>
+</head>
+<body>
+	<div class="wrapper">
+<!--
+		<h1>BOW - <span style='color:#882244;'>TIE</span></h1><br /><h2>Because Of the Web Translation Is Easy</h2>
+-->
+		<div id="logo"></div>
+		<div class="header">
+
+			<div id="nav">
+				<div id="pageCounter"></div>
+					<button id="btn_p">PREV</button>
+					<button id="btn_n">NEXT</button>
+					<button id="btn_s">SAVE</button>
+					<div class="fileUpload"><button id="btn_FAKE_l">LOAD</button><input type="file" id="btn_l"/></div>
+					<a href="" download="salvation_message.cim" id="btn_d">DOWNLOAD</a>
+			</div>
+		</div>
+
+		<div id="main-editor" class="">
+			<div class="editor-container">
+				<div id="page-container"></div>
+			</div>
+
+			<div class="ta_editor editor-container" id="translation">
+				<div id="ta_translation" >&nbsp;</div>
+			</div>
+		</div>
+
+	</div>
+
+<!-- Grab Google CDN's jQuery. fall back to local if necessary -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script>window.jQuery || document.write("<script src='assets/js/libs/jquery-1.11.0.min.js'>\x3C/script>")</script>
+<script src="assets/js/libs/jquery-te-1.4.0.min.js"></script>
+
+<script>
+// remap jQuery to $
+(function($){
+
+/* trigger when page is ready */
+	$(document).ready(function (){
+
+	enableEditor();
+
+
+	function enableEditor(){
+	$("#ta_translation").jqte(
+            {
+                title: true,
+                format: false,
+                fsize: true,
+                color: true,
+                b: true,
+                i: true,
+                u: true,
+                ol: true,
+                ul: true,
+                sub: false,
+                sup: false,
+                outdent: true,
+                indent: true,
+                left: true,
+                center: true,
+                right: true,
+                strike: true,
+                link: false,
+                unlink: false,
+                remove: true,
+                rule: true,
+                source: false
+            }
+        );
+}
+
+////////////////////////////////////////////////////////////////////////
+	var path = "assets/html/"
+	var currentBook="nw";
+	var currentPage=1;
+	var pages = book["master"]["page"];
+	var pageCount = $.map(pages, function(n, i) { return i; }).length;
+////////////////////////////////////////////////////////////////////////
+
+
+	////////////////////////////////////////////////////////////////////
+	loadbook(currentBook);
+	////////////////////////////////////////////////////////////////////
+
+
+	////////////////////////////////////////////////////////////////////
+	function loadbook(bookName){
+			$("#pageCounter").html("");
+			$("<style type='text/css'>" + decodeURIComponent(book["master"]["css"]) + "</style>").appendTo("head");
+
+			$("#page-container").css({"margin-top":"10px","border":"solid 1px black"});
+			//$("body .jqte_editor, body .jqte_source").css({"width":$});
+
+			pageDropDown ="<select id='pages'>";
+			for(i=1;i<=pageCount;i++){
+				pageDropDown += "<option value='val" + i + "'>" + i + "</option>";
+			}
+			pageDropDown += "</select>";
+			$("#pageCounter").append(pageDropDown);
+			loadPage(currentBook,currentPage);
+	}
+	////////////////////////////////////////////////////////////////////
+
+
+	////////////////////////////////////////////////////////////////////
+	function loadPage(b,p){
+		pageNo = "page_"+p;
+		$("#page-container").html(decodeURIComponent(book["master"]["page"][pageNo]["data"]));
+		$("#ta_translation").jqte({"status":false});
+		$("#ta_translation").html(decodeURIComponent(book["translation"]["page"][pageNo]["data"]));
+		enableEditor();
+		//$("#ta_translation").jqte({"status":true});
+		$("#pageCounter select").val("val"+currentPage);
+	}
+	////////////////////////////////////////////////////////////////////
+
+
+	// NAV HANDLERS
+	////////////////////////////////////////////////////////////////////
+
+	// PREVIOUS PAGE
+	////////////////////////////////////////////////////////////////
+	$("div#nav").on("click","#btn_p",function(){
+			save();
+			if (--currentPage <= 1){currentPage = 1;}else{currentPage = currentPage--;}
+			loadPage(currentBook,currentPage);
+			 $("#pageCounter select").val("val"+currentPage);
+		});
+		////////////////////////////////////////////////////////////////
+
+	// NEXT PAGE
+	////////////////////////////////////////////////////////////////
+	$("div#nav").on("click","#btn_n",function(){
+		save();
+		if (currentPage >= pageCount){}else{currentPage++;}
+		//currentPage++;
+		loadPage(currentBook,currentPage);
+		$("#pageCounter select").val("val"+currentPage);
+	});
+		////////////////////////////////////////////////////////////////
+
+	// SAVE
+	////////////////////////////////////////////////////////////////
+	$("div#nav").on("click","#btn_s",function(){
+		 save();
+	});
+		////////////////////////////////////////////////////////////////
+
+	// DOWNLOAD
+	////////////////////////////////////////////////////////////////
+	$("div#nav").on("click","#btn_d",function(){
+		 save();
+		 data = JSON.stringify(book);
+		 var compressed = LZString.compressToEncodedURIComponent(data); // use decompressFromEncodedURIComponent to "unzip"
+		 //var compressed = LZString.compress(data);
+		 this.href = 'data:application/octet-stream;,' + compressed;
+	});
+		////////////////////////////////////////////////////////////////
+
+	// UPLOAD
+	////////////////////////////////////////////////////////////////
+	$("#btn_l").change(function(e){
+		readSingleFile(e);
+	});
+		////////////////////////////////////////////////////////////////
+
+	// SELECTION OF PAGE
+	////////////////////////////////////////////////////////////////
+	$("#pageCounter").on("change","#pages",function(e){
+		currentPage = $("#pages").children("option:selected").text();
+		loadPage(currentBook,currentPage );
+	});
+		////////////////////////////////////////////////////////////////
+
+
+
+
+	// HELPER FUNCTIONS
+	////////////////////////////////////////////////////////////////
+
+
+	// SAVE (UPDATE)
+	function save(){
+		pageNo = "page_"+currentPage;
+		 book["translation"]["page"][pageNo]["data"] = $(".jqte_editor").html();
+	}
+		////////////////////////////////////////////////////////////////
+
+
+
+	// READ UPLOADED FILE
+	////////////////////////////////////////////////////////////////
+	 function readSingleFile(evt) {
+		var f = evt.target.files[0];
+		if (f) {
+		  var r = new FileReader();
+		  r.onload = function(e) {
+				var contents = e.target.result;
+				  data = LZString.decompressFromEncodedURIComponent(contents);
+				  //data = LZString.decompress(contents);
+				  console.log(data);
+				  book = JSON.parse(data);
+				  console.log(book["translation"]["page"]["page_2"]["data"]);
+				  currentPage=1;
+				  loadbook("sm")
+		  }
+		  r.readAsText(f);
+		} else {
+		  alert("Failed to load file");
+		}
+	  }
+		////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+	});
+
+})(window.jQuery);
+
+</script>
+</body>
+</html>

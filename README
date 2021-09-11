@@ -1,0 +1,2 @@
+TODO:
+pdf2htmlEX --embed cFIjo --split-pages 1 --dest-dir html/nw --css-filename bookstyle --page-filename page_%d.html --printing 0 --fallback 0 --optimize-text 0
